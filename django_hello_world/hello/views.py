@@ -6,3 +6,8 @@ from django.contrib.auth.models import User
 def home(request):
     users = User.objects.filter()
     return {'users': users}
+
+
+@render_to('hello/profile.html')
+def profile(request):
+    return {}
