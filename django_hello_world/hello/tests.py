@@ -10,7 +10,7 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import Client
 
-from hello.models import Profile
+from models import Profile
 
 
 class SimpleTest(TestCase):
