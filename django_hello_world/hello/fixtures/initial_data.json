@@ -6,7 +6,7 @@
             "username": "admin", 
             "first_name": "First",
             "last_name": "Last",
-            "is_active": true, 
+            "is_active": true,
             "is_superuser": true, 
             "is_staff": true, 
             "last_login": "2011-08-19 09:59:01", 
@@ -22,6 +22,9 @@
         "model": "hello.profile",
         "fields" : {
             "user": 1,
+            "birthday": "2010-01-01",
+            "bio": "1\n2\n3\n",
+            "contacts": "5\n6\n7\n",
             "jabber": "user@jabber.org",
             "skype": "balmer"
         }

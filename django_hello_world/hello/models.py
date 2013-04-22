@@ -8,7 +8,7 @@ from django.db import models
 class Profile(models.Model):
 
     user = models.ForeignKey(User)
-    birth = models.DateField(null=True)
+    birthday = models.DateField(null=True)
     bio = models.TextField(max_length=600, blank=True, null=True)
     jabber = models.CharField(max_length=60, blank=True, null=True)
     skype = models.CharField(max_length=60, blank=True, null=True)
