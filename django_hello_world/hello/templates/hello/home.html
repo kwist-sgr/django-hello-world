@@ -3,6 +3,31 @@
 {% block content %}
 <h3>Hello! This is a Django Hello World Project.</h3>
 
-<p>You can now go to <a href="{% url admin:index %}">admin interface</a> and change admin pasword</p>
-<p>Currently next users are registered: {% for user in users %}{{ user.username }} {% endfor %}</p>
+<p>You can now go to <a href="{% url 'admin:index' %}">admin interface</a> and change admin pasword</p>
+<p>Currently next users are registered:
+    {% for user in users %}{{ user.username }}{% endfor %}
+    {% if profile %}
+        <h3>42 Coffee Cups Test Assignment</h3>
+
+        <table width="100%" cellpadding="0" cellspacing="10" border="0">
+            <tr>
+                <td><b>Name</b>: {{ profile.name|escape|default:'-' }}</td>
+                <td><b>Email</b>: {{ profile.email|escape|default:'-' }}</td>
+            </tr>
+            <tr>
+                <td><b>Last name</b>: {{ profile.last_name|escape|default:'-' }}</td>
+                <td><b>Jabber</b>: {{ profile.jabber|escape|default:'-' }}</td>
+            </tr>
+            <tr>
+                <td><b>Date of birth</b>: {{ profile.birthday|escape|default:'-' }}</td>
+                <td><b>Skype</b>: {{ profile.skype|escape|default:'-' }}</td>
+            </tr>
+            <tr>
+                <td><b>Bio</b>: <div>{{ profile.bio|escape|linebreaksbr|default:"-" }}</div></td>
+                <td><b>Other contacts</b>: <div>{{ profile.contacts|escape|linebreaksbr|default:"-" }}</div></td>
+            </tr>
+        </table>
+    {% endif %}
+</p>
+
 {% endblock content %}

@@ -4,9 +4,9 @@
         "model": "auth.user", 
         "fields": {
             "username": "admin", 
-            "first_name": "", 
-            "last_name": "", 
-            "is_active": true, 
+            "first_name": "First",
+            "last_name": "Last",
+            "is_active": true,
             "is_superuser": true, 
             "is_staff": true, 
             "last_login": "2011-08-19 09:59:01", 
@@ -15,6 +15,18 @@
             "password": "sha1$b6575$27241f449f25136d2dad689f97cf3c1066cdc162", 
             "email": "admin@example.com", 
             "date_joined": "2011-08-19 09:53:08"
+        }
+    },
+    {
+        "pk": 1,
+        "model": "hello.profile",
+        "fields" : {
+            "user": 1,
+            "birthday": "2010-01-01",
+            "bio": "1\n2\n3\n",
+            "contacts": "5\n6\n7\n",
+            "jabber": "user@jabber.org",
+            "skype": "balmer"
         }
     }
 ]
