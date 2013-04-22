@@ -25,3 +25,13 @@ class HttpTest(TestCase):
         response = c.get(reverse('home'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Hello!')
+
+
+class ProfileTest(TestCase):
+
+    def test_profile(self):
+        user_id = 1
+        response = self.client.get('profile/%d' % user_id)
+        self.assertEqual(response.status_code, 200)
+
+
