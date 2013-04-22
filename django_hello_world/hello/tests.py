@@ -33,7 +33,7 @@ class ProfileTest(TestCase):
 
     def test_profile(self):
         user = User.objects.get(id=1)
-        response = self.client.get('/profile/%d' % user.id)
+        response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         keywords = ('Name', 'Last name', 'Date of birth', 'Bio', 'Email',
                     'Jabber', 'Skype', 'Other contacts')
