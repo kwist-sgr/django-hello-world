@@ -1,5 +1,16 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h3>Hello!</h3>
+    <h3>42 Coffee Cups Test Assignment</h3>
+    <ul>
+        <div><b>Name</b>: {{ values.name|escape|default:'-' }}</div>
+        <div><b>Last name</b>: {{ values.last_name|escape|default:'-' }}</div>
+        <div><b>Date of birth</b>: {{ values.birthday|escape|default:'-' }}</div>
+        <div><b>Bio</b>: {{ values.bio|escape|linebreaksbr|default:"-" }}</div>
+        <p/>
+        <div><b>Email</b>: {{ values.email|escape|default:'-' }}</div>
+        <div><b>Jabber</b>: {{ values.jabber|escape|default:'-' }}</div>
+        <div><b>Skype</b>: {{ values.skype|escape|default:'-' }}</div>
+        <div><b>Other contacts</b>: {{ values.contacts|escape|linebreaksbr|default:'-' }}</div>
+    </ul>
 {% endblock content %}
