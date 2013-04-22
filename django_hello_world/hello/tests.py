@@ -35,7 +35,8 @@ class ProfileTest(TestCase):
         user = User.objects.get(id=1)
         response = self.client.get('/profile/%d' % user.id)
         self.assertEqual(response.status_code, 200)
-        keywords = ('Name', 'Last name', 'Date of birth', 'Bio', 'Email', 'Jabber', 'Skype', 'Other contacts')
+        keywords = ('Name', 'Last name', 'Date of birth', 'Bio', 'Email',
+                    'Jabber', 'Skype', 'Other contacts')
         for keyword in keywords:
             self.assertContains(response, keyword)
 
