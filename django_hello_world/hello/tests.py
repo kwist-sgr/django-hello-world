@@ -70,10 +70,7 @@ class StoreHttpRequestTest(TestCase):
         self.assertFalse(item.referer)
         self.assertFalse(item.user_agent)
 
-        self.assertTrue(item.method)
         self.assertEqual(item.method, 'GET')
-
-        self.assertTrue(item.full_path)
         self.assertEqual(item.full_path, url)
 
     def test_store_headers(self):
@@ -95,19 +92,10 @@ class StoreHttpRequestTest(TestCase):
         self.assertFalse(item.user)
         self.assertFalse(item.is_secure)
 
-        self.assertTrue(item.remote_addr)
         self.assertEqual(item.remote_addr, headers['REMOTE_ADDR'])
-
-        self.assertTrue(item.referer)
         self.assertEqual(item.referer, headers['HTTP_REFERER'])
-
-        self.assertTrue(item.user_agent)
         self.assertEqual(item.user_agent, headers['HTTP_USER_AGENT'])
-
-        self.assertTrue(item.method)
         self.assertEqual(item.method, 'GET')
-
-        self.assertTrue(item.full_path)
         self.assertEqual(item.full_path, url)
 
     def test_main_page(self):
@@ -127,3 +115,7 @@ class StoreHttpRequestTest(TestCase):
                     'Full path', 'GET')
         for keyword in keywords:
             self.assertContains(response, keyword)
+
+        first10 = StoredHttpRequest.objects.order_by('date')[:10]
+        for j in first10:
+            self.assertContains(response, j.date.strftime('%Y-%m-%d %H:%M:%S'))

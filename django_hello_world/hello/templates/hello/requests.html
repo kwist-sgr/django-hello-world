@@ -7,7 +7,7 @@
         {% for j in first10 %}
             <tr>
                 <td>
-                    <div><b>DateTime</b>: {{ j.date|date:"Y-m-d H-i-s" }}</div>
+                    <div><b>DateTime</b>: {{ j.date|date:"Y-m-d H:i:s" }}</div>
                     <div><b>User</b>: {{ j.user|default:'anonymous' }}</div>
                     <div><b>Method</b>: {{ j.method }}</div>
                     <div><b>User-Agent</b>: {{ j.user_agent|default:"-" }}</div>
