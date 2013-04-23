@@ -9,8 +9,9 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import Client
+from django_hello_world.hello.models import StoredHttpRequest
 
-from models import Profile
+from models import Profile, StoredHttpRequest
 
 
 class SimpleTest(TestCase):
@@ -46,3 +47,72 @@ class ProfileTest(TestCase):
             profile.jabber, profile.skype]
         for value in values:
             self.assertContains(response, value)
+
+
+class StoreHttpRequestTest(TestCase):
+
+    def test_store(self):
+        url = '/music/bands/the_beatles?sort=name'
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+
+        store = list(StoredHttpRequest.objects.all())
+        self.assertTrue(store)
+        self.assertEqual(len(store), 1)
+
+        item = store[0]
+        self.assertTrue(item.date)
+        self.assertTrue(item.remote_addr)
+        self.assertFalse(item.user)
+        self.assertFalse(item.is_secure)
+        self.assertFalse(item.referer)
+        self.assertFalse(item.user_agent)
+
+        self.assertTrue(item.method)
+        self.assertEqual(item.method, 'GET')
+
+        self.assertTrue(item.full_path)
+        self.assertEqual(item.full_path, url)
+
+    def test_store_headers(self):
+        url = '/music/bands/the_beatles?sort=name'
+        headers = {
+            'HTTP_USER_AGENT': 'Chrome',
+            'HTTP_REFERER': '/music/search',
+            'REMOTE_ADDR': '10.1.1.1.'
+        }
+        response = self.client.get(url, **headers)
+        self.assertEqual(response.status_code, 404)
+
+        store = list(StoredHttpRequest.objects.all())
+        self.assertTrue(store)
+        self.assertEqual(len(store), 1)
+
+        item = store[0]
+        self.assertTrue(item.date)
+        self.assertFalse(item.user)
+        self.assertFalse(item.is_secure)
+
+        self.assertTrue(item.remote_addr)
+        self.assertEqual(item.remote_addr, headers['REMOTE_ADDR'])
+
+        self.assertTrue(item.referer)
+        self.assertEqual(item.referer, headers['HTTP_REFERER'])
+
+        self.assertTrue(item.user_agent)
+        self.assertEqual(item.user_agent, headers['HTTP_USER_AGENT'])
+
+        self.assertTrue(item.method)
+        self.assertEqual(item.method, 'GET')
+
+        self.assertTrue(item.full_path)
+        self.assertEqual(item.full_path, url)
+
+    def test_main_page(self):
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'requests')
+
+    def test_first_10_http_request(self):
+        response = self.client.get('/requests')
+        self.assertEqual(response.status_code, 200)
