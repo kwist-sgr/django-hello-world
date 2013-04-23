@@ -127,3 +127,12 @@ class StoreHttpRequestTest(TestCase):
                     'Full path', 'GET')
         for keyword in keywords:
             self.assertContains(response, keyword)
+
+
+class SettingsProcessorTest(TestCase):
+
+    def test_processor(self):
+        response = self.client.get('/')
+        self.assertTrue('settings' in response.context)
+        from django.conf import settings as conf
+        self.assertEqual(response.context['settings'], conf)
