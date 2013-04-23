@@ -25,5 +25,5 @@ def home(request):
 
 @render_to('hello/requests.html')
 def requests(request):
-    first10 = StoredHttpRequest.objects.order_by('date')[:10]
+    first10 = StoredHttpRequest.objects.order_by('id')[:10]
     return {'first10': first10}

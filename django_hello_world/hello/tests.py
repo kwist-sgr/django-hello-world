@@ -14,14 +14,6 @@ from django_hello_world.hello.models import StoredHttpRequest
 from models import Profile, StoredHttpRequest
 
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
-
-
 class HttpTest(TestCase):
     def test_home(self):
         c = Client()
@@ -104,9 +96,9 @@ class StoreHttpRequestTest(TestCase):
         self.assertContains(response, 'requests')
 
     def test_first_10_http_request(self):
-        count = 3
-        for j in xrange(count):
-            self.client.get('/%d' % j)
+        count = 15
+        for j in xrange(1, count + 1):
+            self.client.get('/test_url/%d/' % j)
 
         response = self.client.get('/requests')
         self.assertEqual(response.status_code, 200)
@@ -116,6 +108,5 @@ class StoreHttpRequestTest(TestCase):
         for keyword in keywords:
             self.assertContains(response, keyword)
 
-        first10 = StoredHttpRequest.objects.order_by('date')[:10]
-        for j in first10:
-            self.assertContains(response, j.date.strftime('%Y-%m-%d %H:%M:%S'))
+        for j in xrange(1, 11):
+            self.assertContains(response, '/test_url/%d/' % j)
