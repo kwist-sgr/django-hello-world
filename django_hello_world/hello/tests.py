@@ -14,14 +14,6 @@ from django_hello_world.hello.models import StoredHttpRequest
 from models import Profile, StoredHttpRequest
 
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
-        """
-        Tests that 1 + 1 always equals 2.
-        """
-        self.assertEqual(1 + 1, 2)
-
-
 class HttpTest(TestCase):
     def test_home(self):
         c = Client()
@@ -70,10 +62,7 @@ class StoreHttpRequestTest(TestCase):
         self.assertFalse(item.referer)
         self.assertFalse(item.user_agent)
 
-        self.assertTrue(item.method)
         self.assertEqual(item.method, 'GET')
-
-        self.assertTrue(item.full_path)
         self.assertEqual(item.full_path, url)
 
     def test_store_headers(self):
@@ -95,19 +84,10 @@ class StoreHttpRequestTest(TestCase):
         self.assertFalse(item.user)
         self.assertFalse(item.is_secure)
 
-        self.assertTrue(item.remote_addr)
         self.assertEqual(item.remote_addr, headers['REMOTE_ADDR'])
-
-        self.assertTrue(item.referer)
         self.assertEqual(item.referer, headers['HTTP_REFERER'])
-
-        self.assertTrue(item.user_agent)
         self.assertEqual(item.user_agent, headers['HTTP_USER_AGENT'])
-
-        self.assertTrue(item.method)
         self.assertEqual(item.method, 'GET')
-
-        self.assertTrue(item.full_path)
         self.assertEqual(item.full_path, url)
 
     def test_main_page(self):
@@ -116,9 +96,9 @@ class StoreHttpRequestTest(TestCase):
         self.assertContains(response, 'requests')
 
     def test_first_10_http_request(self):
-        count = 3
-        for j in xrange(count):
-            self.client.get('/%d' % j)
+        count = 15
+        for j in xrange(1, count + 1):
+            self.client.get('/test_url/%d/' % j)
 
         response = self.client.get('/requests')
         self.assertEqual(response.status_code, 200)
@@ -127,3 +107,8 @@ class StoreHttpRequestTest(TestCase):
                     'Full path', 'GET')
         for keyword in keywords:
             self.assertContains(response, keyword)
+
+        for j in xrange(1, 11):
+            self.assertContains(response, '/test_url/%d/' % j)
+        for j in xrange(11, 20):
+            self.assertNotContains(response, '/test_url/%d/' % j)

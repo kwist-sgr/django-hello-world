@@ -14,5 +14,5 @@ class RequestStoreMiddleware(object):
             full_path=request.get_full_path(),
             user_agent=request.META.get('HTTP_USER_AGENT'),
             referer=request.META.get('HTTP_REFERER'),
-            remote_addr=request.META['REMOTE_ADDR']
+            remote_addr=request.META.get('HTTP_X_REAL_IP', request.META['REMOTE_ADDR'])
         )
