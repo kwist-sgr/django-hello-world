@@ -114,5 +114,14 @@ class StoreHttpRequestTest(TestCase):
         self.assertContains(response, 'requests')
 
     def test_first_10_http_request(self):
+        count = 3
+        for j in xrange(count):
+            self.client.get('/%d' % j)
+
         response = self.client.get('/requests')
         self.assertEqual(response.status_code, 200)
+
+        keywords = ('DateTime', 'User', 'Method', 'User-Agent',
+                    'Full path', 'GET')
+        for keyword in keywords:
+            self.assertContains(response, keyword)
