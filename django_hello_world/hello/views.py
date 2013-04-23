@@ -19,7 +19,7 @@ def home(request):
             'skype': profile.skype
         }
     except:
-        profile_values= {}
+        profile_values = {}
     return {'users': users, 'profile': profile_values}
 
 

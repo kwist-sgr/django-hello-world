@@ -42,9 +42,11 @@ class ProfileTest(TestCase):
             self.assertContains(response, keyword)
 
         profile = Profile.objects.get(user=user)
-        values = [user.first_name, user.last_name, user.email, profile.birthday.isoformat(),
+        values = [
+            user.first_name, user.last_name, user.email, profile.birthday.isoformat(),
             profile.bio.replace('\n', '<br />'), profile.contacts.replace('\n', '<br />'),
-            profile.jabber, profile.skype]
+            profile.jabber, profile.skype
+        ]
         for value in values:
             self.assertContains(response, value)
 

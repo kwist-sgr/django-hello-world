@@ -22,11 +22,9 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal(u'hello', ['StoredHttpRequest'])
 
-
     def backwards(self, orm):
         # Deleting model 'StoredHttpRequest'
         db.delete_table(u'hello_storedhttprequest')
-
 
     models = {
         u'auth.group': {
