@@ -110,3 +110,5 @@ class StoreHttpRequestTest(TestCase):
 
         for j in xrange(1, 11):
             self.assertContains(response, '/test_url/%d/' % j)
+        for j in xrange(11, 20):
+            self.assertNotContains(response, '/test_url/%d/' % j)
