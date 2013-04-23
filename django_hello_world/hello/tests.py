@@ -112,3 +112,12 @@ class StoreHttpRequestTest(TestCase):
             self.assertContains(response, '/test_url/%d/' % j)
         for j in xrange(11, 20):
             self.assertNotContains(response, '/test_url/%d/' % j)
+
+
+class SettingsProcessorTest(TestCase):
+
+    def test_processor(self):
+        response = self.client.get('/')
+        self.assertTrue('settings' in response.context)
+        from django.conf import settings as conf
+        self.assertEqual(response.context['settings'], conf)
