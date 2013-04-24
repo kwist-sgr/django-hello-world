@@ -103,10 +103,10 @@ class StoreHttpRequestTest(TestCase):
         response = self.client.get('/requests')
         self.assertEqual(response.status_code, 200)
 
-        keywords = ('DateTime', 'User', 'Method', 'User-Agent',
+        keywords = ('DateTime', 'Method', 'User-Agent',
                     'Full path', 'GET')
         for keyword in keywords:
-            self.assertContains(response, keyword)
+            self.assertContains(response, keyword, count=10)
 
         for j in xrange(1, 11):
             self.assertContains(response, '/test_url/%d/' % j)
