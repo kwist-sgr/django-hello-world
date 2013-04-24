@@ -25,7 +25,6 @@ class HttpTest(TestCase):
 class ProfileTest(TestCase):
 
     def test_profile(self):
-        user = User.objects.get(id=1)
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         keywords = ('Name', 'Last name', 'Date of birth', 'Bio', 'Email',
@@ -33,11 +32,16 @@ class ProfileTest(TestCase):
         for keyword in keywords:
             self.assertContains(response, keyword)
 
-        profile = Profile.objects.get(user=user)
+        profile = Profile.objects.get(user__id=1)
         values = [
-            user.first_name, user.last_name, user.email, profile.birthday.isoformat(),
-            profile.bio.replace('\n', '<br />'), profile.contacts.replace('\n', '<br />'),
-            profile.jabber, profile.skype
+            profile.first_name,
+            profile.last_name,
+            profile.email,
+            profile.birthday.isoformat(),
+            profile.bio.replace('\n', '<br />'),
+            profile.contacts.replace('\n', '<br />'),
+            profile.jabber,
+            profile.skype
         ]
         for value in values:
             self.assertContains(response, value)

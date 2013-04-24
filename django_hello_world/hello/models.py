@@ -7,6 +7,9 @@ from django.db import models
 class Profile(models.Model):
 
     user = models.ForeignKey(User)
+    first_name = models.CharField(max_length=30, blank=True)
+    last_name = models.CharField(max_length=30, blank=True)
+    email = models.EmailField(blank=True)
     birthday = models.DateField(null=True)
     bio = models.TextField(max_length=600, blank=True, null=True)
     jabber = models.CharField(max_length=60, blank=True, null=True)

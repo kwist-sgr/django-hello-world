@@ -7,11 +7,11 @@ from django_hello_world.hello.models import Profile, StoredHttpRequest
 def home(request):
     users = User.objects.filter()
     try:
-        profile = Profile.objects.select_related().get(user__id=1)
+        profile = Profile.objects.get(user__id=1)
         profile_values = {
-            'name': profile.user.first_name,
-            'last_name': profile.user.last_name,
-            'email': profile.user.email,
+            'name': profile.first_name,
+            'last_name': profile.last_name,
+            'email': profile.email,
             'bio': profile.bio,
             'birthday': profile.birthday,
             'contacts': profile.contacts,
