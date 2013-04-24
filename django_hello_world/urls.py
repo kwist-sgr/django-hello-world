@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.conf.urls.defaults import patterns, include, url
 
 # Uncomment the next two lines to enable the admin:
@@ -16,6 +17,9 @@ urlpatterns = patterns(
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^accounts/login/$', 'django.contrib.auth.views.login', name='login'),
+    url(r'^accounts/logout/$', 'django.contrib.auth.views.logout', name='logout'),
+    url(r'^js/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT + '/js'}),
 
     url(r'^requests/?$', 'django_hello_world.hello.views.requests', name='requests')
 )

@@ -121,3 +121,23 @@ class SettingsProcessorTest(TestCase):
         self.assertTrue('settings' in response.context)
         from django.conf import settings as conf
         self.assertEqual(response.context['settings'], conf)
+
+
+class EditFormTest(TestCase):
+
+    def test_anonymous_user(self):
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Login')
+        self.assertNotContains(response, 'Edit')
+        self.assertNotContains(response, 'Logout')
+
+    def test_authenticated(self):
+        user = User.objects.get(id=1)
+        self.assertTrue(self.client.login(username=user.username, password='admin'))
+
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, 'Login')
+        self.assertContains(response, 'Edit')
+        self.assertContains(response, 'Logout')

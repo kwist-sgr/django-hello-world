@@ -1,18 +1,37 @@
 {% extends "base.html" %}
 
+{% block title %}Django Heelo World{% endblock %}
+
 {% block content %}
-<h3>Hello! This is a Django Hello World Project.</h3>
+    <h3>Hello! This is a Django Hello World Project.</h3>
 
-<p>You can now go to <a href="{% url 'admin:index' %}">admin interface</a> and change admin pasword</p>
-<p>Currently next users are registered:
-    {% for user in users %}{{ user.username }}{% endfor %}
-    {% if profile %}
-        <h3>42 Coffee Cups Test Assignment</h3>
+    <table width="80%" cellpadding="0" cellspacing="10" border="0">
+        <tr>
+            <td><h3>42 Coffee Cups Test Assignment</h3></td>
+            <td>
+                {% if user.is_authenticated %}
+                    <div>
+                        <a href="{% url "django.contrib.auth.views.logout" %}?next={{ request.path|default:'/' }}">Logout</a>
+                    </div>
+                    <div>
+                        <a href="/profile_edit/">Edit</a>
+                    </div>
+                {% else %}
+                    <a href="{% url "django.contrib.auth.views.login" %}?next={{ request.path|default:'/' }}">Login</a>
+                {% endif %}
+            </td>
+        </tr>
+    </table>
 
-        <table width="100%" cellpadding="0" cellspacing="10" border="0">
+    <form id="profile_form" action="/profile" method="post">
+        <table width="80%" cellpadding="0" cellspacing="10" border="0">
             <tr>
-                <td><b>Name</b>: {{ profile.name|escape|default:'-' }}</td>
-                <td><b>Email</b>: {{ profile.email|escape|default:'-' }}</td>
+                <td>
+                    <b>Name</b>: {{ profile.name|escape|default:'-' }}>
+                </td>
+                <td>
+                    <b>Email</b>: {{ profile.email|escape|default:'-' }}>
+                </td>
             </tr>
             <tr>
                 <td><b>Last name</b>: {{ profile.last_name|escape|default:'-' }}</td>
@@ -23,14 +42,38 @@
                 <td><b>Skype</b>: {{ profile.skype|escape|default:'-' }}</td>
             </tr>
             <tr>
-                <td><b>Bio</b>: <div>{{ profile.bio|escape|linebreaksbr|default:"-" }}</div></td>
+                <td valign="top"><b>Photo</b>:</td>
                 <td><b>Other contacts</b>: <div>{{ profile.contacts|escape|linebreaksbr|default:"-" }}</div></td>
             </tr>
+            <tr>
+                <td></td>
+                <td><b>Bio</b>: <div>{{ profile.bio|escape|linebreaksbr|default:"-" }}</div></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+            </tr>
         </table>
-    {% endif %}
+    </form>
 </p>
 
 <p>
     <a href="/requests/">requests</a>
 </p>
 {% endblock content %}
+
+{% block script %}
+    {% if request.user.is_authenticated %}
+        {{ block.super }}
+        <script type="text/javascript" src="/js/jquery.form.js"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function(){
+                $("#profile_form").ajaxForm(function() {
+                //alert("Спасибо за комментарий!");
+            });
+        });
+        </script>
+    {%  else %}
+    {% endif %}
+{% endblock script %}

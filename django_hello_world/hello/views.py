@@ -27,3 +27,4 @@ def home(request):
 def requests(request):
     first10 = StoredHttpRequest.objects.order_by('id')[:10]
     return {'first10': first10}
+
