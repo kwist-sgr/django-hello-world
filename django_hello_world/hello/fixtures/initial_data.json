@@ -26,7 +26,10 @@
             "bio": "1\n2\n3\n",
             "contacts": "5\n6\n7\n",
             "jabber": "user@jabber.org",
-            "skype": "balmer"
+            "skype": "balmer",
+            "first_name": "Vasya",
+            "last_name": "Pupkin",
+            "email": "vasya.admin@outlook.com"
         }
     }
 ]

@@ -5,13 +5,15 @@ when you run "manage.py test".
 Replace this with more appropriate tests for your application.
 """
 from django.contrib.auth.models import User
+from django.conf import settings as conf
 
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import Client
-from django_hello_world.hello.models import StoredHttpRequest
 
-from models import Profile, StoredHttpRequest
+from django_hello_world.hello.models import Profile, StoredHttpRequest
+from django_hello_world.hello.forms import ProfileEditForm
+from django_hello_world.hello.views import ProfileEditView
 
 
 class HttpTest(TestCase):
@@ -25,7 +27,6 @@ class HttpTest(TestCase):
 class ProfileTest(TestCase):
 
     def test_profile(self):
-        user = User.objects.get(id=1)
         response = self.client.get('/')
         self.assertEqual(response.status_code, 200)
         keywords = ('Name', 'Last name', 'Date of birth', 'Bio', 'Email',
@@ -33,11 +34,16 @@ class ProfileTest(TestCase):
         for keyword in keywords:
             self.assertContains(response, keyword)
 
-        profile = Profile.objects.get(user=user)
+        profile = Profile.objects.get(user__id=1)
         values = [
-            user.first_name, user.last_name, user.email, profile.birthday.isoformat(),
-            profile.bio.replace('\n', '<br />'), profile.contacts.replace('\n', '<br />'),
-            profile.jabber, profile.skype
+            profile.first_name,
+            profile.last_name,
+            profile.email,
+            profile.birthday.isoformat(),
+            profile.bio.replace('\n', '<br />'),
+            profile.contacts.replace('\n', '<br />'),
+            profile.jabber,
+            profile.skype
         ]
         for value in values:
             self.assertContains(response, value)
@@ -119,11 +125,10 @@ class SettingsProcessorTest(TestCase):
     def test_processor(self):
         response = self.client.get('/')
         self.assertTrue('settings' in response.context)
-        from django.conf import settings as conf
         self.assertEqual(response.context['settings'], conf)
 
 
-class EditFormTest(TestCase):
+class ProfileEditTest(TestCase):
 
     def test_anonymous_user(self):
         response = self.client.get('/')
@@ -141,3 +146,27 @@ class EditFormTest(TestCase):
         self.assertNotContains(response, 'Login')
         self.assertContains(response, 'Edit')
         self.assertContains(response, 'Logout')
+
+    def test_auth_edit(self):
+        id = 1
+        url = '/profile/%d/edit/' % id
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue('location' in response)
+        self.assertTrue(conf.LOGIN_URL in response['location'])
+        self.assertTrue('next=%s' % url in response['location'])
+
+        profile = Profile.objects.get(user__id=id)
+        self.assertTrue(self.client.login(username=profile.user.username, password='admin'))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Edit Profile')
+
+        self.assertTrue('form' in response.context)
+        self.assertTrue(isinstance(response.context['form'], ProfileEditForm))
+        self.assertTrue('view' in response.context)
+        self.assertTrue(isinstance(response.context['view'], ProfileEditView))
+        self.assertTrue('object' in response.context)
+        self.assertTrue('profile' in response.context)
+        self.assertEqual(response.context['object'], response.context['profile'])
+        self.assertTrue(isinstance(response.context['object'], Profile))
