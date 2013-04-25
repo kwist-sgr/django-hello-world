@@ -35,3 +35,6 @@ class ProfileEditView(UpdateView):
 
     def form_valid(self, form):
         return super(ProfileEditView, self).form_valid(form)
+
+    def get_queryset(self):
+        return super(ProfileEditView, self).get_queryset().select_related('user')
