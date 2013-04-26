@@ -3,7 +3,9 @@
 <html>
 <head>
     <title>{% block title %}No title{% endblock %}</title>
+    {% block css %}
     <link href="/css/main.css" rel="stylesheet" type="text/css" />
+    {% endblock css %}
 </head>
 <body>
     {% block body %}
