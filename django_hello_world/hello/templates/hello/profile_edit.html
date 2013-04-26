@@ -12,30 +12,37 @@
         <table width="80%" cellpadding="0" cellspacing="10" border="0">
             <tr>
                 <td>
+                    {{ form.first_name.errors }}
                     <label>{{ form.first_name.label }}</label>: {{ form.first_name }}
                 </td>
                 <td>
+                    {{ form.email.errors }}
                     <label>{{ form.email.label }}</label>: {{ form.email }}
                 </td>
             </tr>
             <tr>
                 <td>
+                    {{ form.last_name.errors }}
                     <label>{{ form.last_name.label }}</label>: {{ form.last_name }}
                 </td>
                 <td>
+                    {{ form.jabber.errors }}
                     <label>{{ form.jabber.label }}</label>: {{ form.jabber }}
                 </td>
             </tr>
             <tr>
                 <td>
+                    {{ form.birthday.errors }}
                     <label>{{ form.birthday.label }}</label>: {{ form.birthday }}
                 </td>
                 <td>
+                    {{ form.skype.errors }}
                     <label>{{ form.skype.label }}</label>: {{ form.skype }}
                 </td>
             </tr>
             <tr>
                 <td valign="top">
+                    {{ form.photo.errors }}
                     <label>{{ form.photo.label }}</label>: {{ form.photo }}
                     {%  if profile.photo %}
                     <div>
@@ -45,15 +52,15 @@
                     <div id="prev_id_photo"></div>
                 </td>
                 <td>
+                    {{ form.contacts.errors }}
                     <label>{{ form.contacts.label }}</label>
                     <div>{{ form.contacts }}</div>
                 </td>
             </tr>
             <tr>
+                <td></td>
                 <td>
-
-                </td>
-                <td>
+                    {{ form.bio.errors }}
                     <label>{{ form.bio.label }}</label>
                     <div>{{ form.bio }}</div>
                 </td>
