@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Edit {{ profile }}{% endblock %}
+
+{% block content %}
+    <h3>42 Coffee Cups Test Assignment</h3>
+    <h2>Edit {{ profile }}</h2>
+
+    <form action="" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <table width="80%" cellpadding="0" cellspacing="10" border="0">
+            <tr>
+                <td>
+                    <label>{{ form.first_name.label }}</label>: {{ form.first_name }}
+                </td>
+                <td>
+                    <label>{{ form.email.label }}</label>: {{ form.email }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>{{ form.last_name.label }}</label>: {{ form.last_name }}
+                </td>
+                <td>
+                    <label>{{ form.jabber.label }}</label>: {{ form.jabber }}
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label>{{ form.birthday.label }}</label>: {{ form.birthday }}
+                </td>
+                <td>
+                    <label>{{ form.skype.label }}</label>: {{ form.skype }}
+                </td>
+            </tr>
+            <tr>
+                <td valign="top">
+                    <label>{{ form.photo.label }}</label>: {{ form.photo }}
+                    {%  if profile.photo %}
+                    <div>
+                        <img src="/{{ profile.photo.url }}" alt="User photo" border="2" width="158" height="150" id="id_photo_view">
+                    </div>
+                    {% endif %}
+                    <div id="prev_id_photo"></div>
+                </td>
+                <td>
+                    <label>{{ form.contacts.label }}</label>
+                    <div>{{ form.contacts }}</div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+
+                </td>
+                <td>
+                    <label>{{ form.bio.label }}</label>
+                    <div>{{ form.bio }}</div>
+                </td>
+            </tr>
+        </table>
+        <button type="submit">Save</button>&nbsp;<a href="/">Cancel</a>
+    </form>
+
+{% endblock content %}
+
+{% block script %}
+    {{ block.super }}
+    <script type="text/javascript" src="/js/jquery.preimage.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+	        $('[type=file]').preimage();
+
+            $('#id_photo').bind('change', function(){ $('#id_photo_view').hide() })
+        });
+    </script>
+{% endblock script %}
