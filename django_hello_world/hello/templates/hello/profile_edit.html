@@ -107,7 +107,8 @@
 
             var options = {
                 beforeSubmit: cbRequest,
-                success: cbResponse
+                success: cbResponse,
+                error: cbError,
             };
 
             $('#id_profile_edit').submit(function() {
@@ -115,11 +116,15 @@
                 return false
             });
 
+            function lockForm(disable) {
+                $("#id_profile_edit :input").attr("disabled", disable);
+            };
+
             // pre-submit callback
             function cbRequest(formData, jqForm, options) {
                 $('#ajax_loader').show();
                 $('#ajax_target').html('');
-                $("#id_profile_edit :input").attr("disabled", true);
+                lockForm(true);
             };
 
             // post-submit callback
@@ -143,7 +148,13 @@
                 }
                 $('#ajax_loader').hide();
                 $('#ajax_target').html(message);
-                $("#id_profile_edit :input").attr("disabled", false);
+                lockForm(false);
+            };
+
+            function cbError(xhr, ajaxOptions, thrownError) {
+                $('#ajax_loader').hide();
+                $('#ajax_target').html(sprintf('%d - %s', xhr.status, thrownError));
+                lockForm(false);
             }
         })
     </script>

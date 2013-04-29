@@ -5,8 +5,6 @@
 {% block content %}
     <h3>Hello! This is a Django Hello World Project.</h3>
 
-    {{ form.as_p }}
-
     <table width="80%" cellpadding="0" cellspacing="10" border="0">
         <tr>
             <td><h3>42 Coffee Cups Test Assignment</h3></td>
@@ -25,45 +23,43 @@
         </tr>
     </table>
 
-    <form id="profile_form" action="/profile" method="post">
-        <table width="80%" cellpadding="0" cellspacing="10" border="0">
-            <tr>
-                <td>
-                    <b>Name</b>: {{ profile.first_name|escape|default:'-' }}
-                </td>
-                <td>
-                    <b>Email</b>: {{ profile.email|escape|default:'-' }}
-                </td>
-            </tr>
-            <tr>
-                <td><b>Last name</b>: {{ profile.last_name|escape|default:'-' }}</td>
-                <td><b>Jabber</b>: {{ profile.jabber|escape|default:'-' }}</td>
-            </tr>
-            <tr>
-                <td><b>Date of birth</b>: {{ profile.birthday|escape|default:'-' }}</td>
-                <td><b>Skype</b>: {{ profile.skype|escape|default:'-' }}</td>
-            </tr>
-            <tr>
-                <td valign="top">
-                    <b>Photo</b>:
-                    <div width="50" height="100">
-                        {%  if profile.photo %}
-                            <img src="/{{ profile.photo.url }}" alt="User photo" border="2" width="158" height="150">
-                        {% endif %}
-                    </div>
-                </td>
-                <td><b>Other contacts</b>: <div>{{ profile.contacts|escape|linebreaksbr|default:"-" }}</div></td>
-            </tr>
-            <tr>
-                <td valign="top"></td>
-                <td><b>Bio</b>: <div>{{ profile.bio|escape|linebreaksbr|default:"-" }}</div></td>
-            </tr>
-            <tr>
-                <td></td>
-                <td></td>
-            </tr>
-        </table>
-    </form>
+    <table width="80%" cellpadding="0" cellspacing="10" border="0">
+        <tr>
+            <td>
+                <b>Name</b>: {{ profile.first_name|escape|default:'-' }}
+            </td>
+            <td>
+                <b>Email</b>: {{ profile.email|escape|default:'-' }}
+            </td>
+        </tr>
+        <tr>
+            <td><b>Last name</b>: {{ profile.last_name|escape|default:'-' }}</td>
+            <td><b>Jabber</b>: {{ profile.jabber|escape|default:'-' }}</td>
+        </tr>
+        <tr>
+            <td><b>Date of birth</b>: {{ profile.birthday|escape|default:'-' }}</td>
+            <td><b>Skype</b>: {{ profile.skype|escape|default:'-' }}</td>
+        </tr>
+        <tr>
+            <td valign="top">
+                <b>Photo</b>:
+                <div width="50" height="100">
+                    {%  if profile.photo %}
+                        <img src="/{{ profile.photo.url }}" alt="User photo" border="2" width="158" height="150">
+                    {% endif %}
+                </div>
+            </td>
+            <td><b>Other contacts</b>: <div>{{ profile.contacts|escape|linebreaksbr|default:"-" }}</div></td>
+        </tr>
+        <tr>
+            <td valign="top"></td>
+            <td><b>Bio</b>: <div>{{ profile.bio|escape|linebreaksbr|default:"-" }}</div></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
 </p>
 
 <p>
