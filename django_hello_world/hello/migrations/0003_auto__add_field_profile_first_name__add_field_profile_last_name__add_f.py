@@ -23,7 +23,6 @@ class Migration(SchemaMigration):
                       self.gf('django.db.models.fields.EmailField')(default='', max_length=75, blank=True),
                       keep_default=False)
 
-
     def backwards(self, orm):
         # Deleting field 'Profile.first_name'
         db.delete_column(u'hello_profile', 'first_name')
@@ -33,7 +32,6 @@ class Migration(SchemaMigration):
 
         # Deleting field 'Profile.email'
         db.delete_column(u'hello_profile', 'email')
-
 
     models = {
         u'auth.group': {
