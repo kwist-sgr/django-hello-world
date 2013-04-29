@@ -127,7 +127,7 @@
                 $('ul[id$=_errors]').html('');
                 var message = '';
                 var obj = responseText;
-                if (obj != null) {
+                if (!jQuery.isEmptyObject(obj)) {
                     for (var id in obj) {
                         var text = jQuery.map(obj[id], function(item, j){
                             return sprintf('<li>%s</li>', item) }
