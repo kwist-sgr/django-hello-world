@@ -142,7 +142,6 @@ class ProfileEditTest(TestCase):
         self.assertTrue(self.client.login(username=user.username, password='admin'))
 
         response = self.client.get('/')
-        self.assertEqual(response.status_code, 200)
         self.assertNotContains(response, 'Login')
         self.assertContains(response, 'Edit')
         self.assertContains(response, 'Logout')
@@ -167,3 +166,83 @@ class ProfileEditTest(TestCase):
         self.assertTrue('profile' in response.context)
         self.assertEqual(response.context['object'], response.context['profile'])
         self.assertTrue(isinstance(response.context['object'], Profile))
+
+        # Check Submit
+        self.assertTrue('csrf_token' in response.context)
+        data = {
+            'csrfmiddlewaretoken': response.context['csrf_token'],
+            'first_name': 'new name',
+            'last_name': 'new last name',
+            'jabber': 'yandex',
+            'birthday': '2012-01-10',
+            'skype': 'ejvdyrtrgdgfg',
+            'photo': '',
+            'contacts': 'wer\ntyiuy\nchf',
+            'bio': 'arhhdhjrgrd\njertueut\n\nrjhtuertu',
+        }
+
+        r = self.client.post(url, data=data)
+        self.assertRedirects(r, '/')
+
+        profile = Profile.objects.get(user__id=id)
+        for key, value in data.iteritems():
+            if key != 'csrfmiddlewaretoken':
+                if key == 'birthday':
+                    self.assertEqual(value, getattr(profile, key).strftime('%Y-%m-%d'))
+                else:
+                    self.assertEqual(value, getattr(profile, key))
+
+        # Check error
+        data['birthday'] = 'dfhgh'
+        r = self.client.post(url, data=data)
+        self.assertContains(response, 'ul class="errorlist"')
+
+    def test_ajax_submit(self):
+        id = 1
+        url = '/profile/%d/edit/' % id
+        profile = Profile.objects.get(user__id=id)
+
+        self.assertTrue(self.client.login(username=profile.user.username, password='admin'))
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Edit Profile')
+
+        self.assertTrue('form' in response.context)
+        self.assertTrue(isinstance(response.context['form'], ProfileEditForm))
+        self.assertTrue('view' in response.context)
+        self.assertTrue(isinstance(response.context['view'], ProfileEditView))
+        self.assertTrue('object' in response.context)
+        self.assertTrue('profile' in response.context)
+        self.assertEqual(response.context['object'], response.context['profile'])
+        self.assertTrue(isinstance(response.context['object'], Profile))
+
+        # Check Ajax Submit
+        self.assertTrue('csrf_token' in response.context)
+        data = {
+            'csrfmiddlewaretoken': response.context['csrf_token'],
+            'first_name': 'new name',
+            'last_name': 'new last name',
+            'jabber': 'yandex',
+            'birthday': '2012-01-10',
+            'skype': 'ejvdyrtrgdgfg',
+            'photo': '',
+            'contacts': 'wer\ntyiuy\nchf',
+            'bio': 'arhhdhjrgrd\njertueut\n\nrjhtuertu',
+        }
+
+        r = self.client.post(url, data=data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.content, '{}')
+
+        profile = Profile.objects.get(user__id=id)
+        for key, value in data.iteritems():
+            if key != 'csrfmiddlewaretoken':
+                if key == 'birthday':
+                    self.assertEqual(value, getattr(profile, key).strftime('%Y-%m-%d'))
+                else:
+                    self.assertEqual(value, getattr(profile, key))
+
+        # Check error
+        data['birthday'] = 'dfhgh'
+        r = self.client.post(url, data=data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertContains(r, 'birthday')

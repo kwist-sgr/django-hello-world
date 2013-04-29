@@ -3,7 +3,7 @@ from django.views.generic.edit import UpdateView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
-from annoying.decorators import render_to
+from annoying.decorators import render_to, ajax_request
 from django.http import HttpResponse
 
 from django_hello_world.hello.models import Profile, StoredHttpRequest
@@ -34,13 +34,18 @@ class ProfileEditView(UpdateView):
         #    return HttpResponseForbidden()
         return super(ProfileEditView, self).dispatch(request, *args, **kwargs)
 
+    @ajax_request
     def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        form = self.get_form(self.get_form_class())
-        if form.is_valid():
-            return HttpResponse()
+        if request.is_ajax():
+            self.object = self.get_object()
+            form = self.get_form(self.get_form_class())
+            if form.is_valid():
+                self.object = form.save()
+                return {}
+            else:
+                return form.errors
         else:
-            return HttpResponse(json.dumps(form.errors))
+            return super(ProfileEditView, self).post(requests, *args, **kwargs)
 
     def get_queryset(self):
         return super(ProfileEditView, self).get_queryset().select_related('user')

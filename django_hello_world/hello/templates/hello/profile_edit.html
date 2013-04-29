@@ -124,10 +124,10 @@
 
             // post-submit callback
             function cbResponse(responseText, statusText, xhr, $form)  {
+                $('ul[id$=_errors]').html('');
                 var message = '';
-                $('ul[id$=_errors]').html('')
-                if (responseText) {
-                    obj = jQuery.parseJSON(responseText);
+                var obj = responseText;
+                if (obj != null) {
                     for (var id in obj) {
                         var text = jQuery.map(obj[id], function(item, j){
                             return sprintf('<li>%s</li>', item) }
