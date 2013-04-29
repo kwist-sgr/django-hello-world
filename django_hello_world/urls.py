@@ -26,5 +26,5 @@ urlpatterns = patterns(
     url(r'^photos/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.MEDIA_ROOT + '/photos'}),
 
     url(r'^requests/?$', 'django_hello_world.hello.views.requests', name='requests'),
-    url(r'^profile/(?P<pk>\d+)/edit/?$', ProfileEditView.as_view(), name='profile_edit'),
+    url(r'^profile/(?P<pk>\d+)/edit/?$', ProfileEditView.as_view(), name='profile_edit')
 )
