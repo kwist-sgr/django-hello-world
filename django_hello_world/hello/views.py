@@ -1,9 +1,10 @@
+import json
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
-from annoying.decorators import render_to
-from django.contrib.auth.models import User
+from annoying.decorators import render_to, ajax_request
+from django.http import HttpResponse
 
 from django_hello_world.hello.models import Profile, StoredHttpRequest
 from django_hello_world.hello.forms import ProfileEditForm
@@ -32,6 +33,19 @@ class ProfileEditView(UpdateView):
         #if int(kwargs['pk']) != request.user.id:
         #    return HttpResponseForbidden()
         return super(ProfileEditView, self).dispatch(request, *args, **kwargs)
+
+    @ajax_request
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            self.object = self.get_object()
+            form = self.get_form(self.get_form_class())
+            if form.is_valid():
+                self.object = form.save()
+                return {}
+            else:
+                return form.errors
+        else:
+            return super(ProfileEditView, self).post(requests, *args, **kwargs)
 
     def get_queryset(self):
         return super(ProfileEditView, self).get_queryset().select_related('user')

@@ -6,36 +6,51 @@
     <h3>42 Coffee Cups Test Assignment</h3>
     <h2>Edit {{ profile }}</h2>
 
-    <form action="" method="post" enctype="multipart/form-data">
+    <form action="" method="post" enctype="multipart/form-data" id="id_profile_edit">
         {% csrf_token %}
+
         {{ form.non_field_errors }}
         <table width="80%" cellpadding="0" cellspacing="10" border="0">
             <tr>
                 <td>
+                    {{ form.first_name.errors }}
+                    <ul class="errorlist" id="first_name_errors"></ul>
                     <label>{{ form.first_name.label }}</label>: {{ form.first_name }}
                 </td>
                 <td>
+                    {{ form.email.errors }}
+                    <ul class="errorlist" id="email_errors"></ul>
                     <label>{{ form.email.label }}</label>: {{ form.email }}
                 </td>
             </tr>
             <tr>
                 <td>
+                    {{ form.last_name.errors }}
+                    <ul class="errorlist" id="last_name_errors"></ul>
                     <label>{{ form.last_name.label }}</label>: {{ form.last_name }}
                 </td>
                 <td>
+                    {{ form.jabber.errors }}
+                    <ul class="errorlist" id="jabber_errors"></ul>
                     <label>{{ form.jabber.label }}</label>: {{ form.jabber }}
                 </td>
             </tr>
             <tr>
                 <td>
+                    {{ form.birthday.errors }}
+                    <ul class="errorlist" id="birthday_errors"></ul>
                     <label>{{ form.birthday.label }}</label>: {{ form.birthday }}
                 </td>
                 <td>
+                    {{ form.skype.errors }}
+                    <ul class="errorlist" id="skype_errors"></ul>
                     <label>{{ form.skype.label }}</label>: {{ form.skype }}
                 </td>
             </tr>
             <tr>
                 <td valign="top">
+                    {{ form.photo.errors }}
+                    <ul class="errorlist" id="photo_errors"></ul>
                     <label>{{ form.photo.label }}</label>: {{ form.photo }}
                     {%  if profile.photo %}
                     <div>
@@ -45,34 +60,102 @@
                     <div id="prev_id_photo"></div>
                 </td>
                 <td>
+                    {{ form.contacts.errors }}
+                    <ul class="errorlist" id="contacts_errors"></ul>
                     <label>{{ form.contacts.label }}</label>
                     <div>{{ form.contacts }}</div>
                 </td>
             </tr>
             <tr>
+                <td></td>
                 <td>
-
-                </td>
-                <td>
+                    {{ form.bio.errors }}
+                    <ul class="errorlist" id="bio_errors"></ul>
                     <label>{{ form.bio.label }}</label>
                     <div>{{ form.bio }}</div>
                 </td>
             </tr>
         </table>
+        <div id="ajax_target">&nbsp;</div>
+        <div id="ajax_loader">Loading in progress ...</div>
         <button type="submit">Save</button>&nbsp;<a href="/">Cancel</a>
     </form>
 
 {% endblock content %}
 
+{% block css %}
+    {{ block.super }}
+    <link href="/css/jquery-ui.css" rel="stylesheet" type="text/css" />
+{% endblock css %}
+
+
 {% block script %}
     {{ block.super }}
+    <script type="text/javascript" src="/js/jquery.form.js"></script>
     <script type="text/javascript" src="/js/jquery.preimage.js"></script>
+    <script type="text/javascript" src="/js/jquery.ui.core.js"></script>
+    <script type="text/javascript" src="/js/jquery.ui.widget.js"></script>
+    <script type="text/javascript" src="/js/jquery.ui.datepicker.js"></script>
+    <script type="text/javascript" src="/js/sprintf.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function(){
 	        $('[type=file]').preimage();
+            $('#id_birthday').datepicker({dateFormat: 'yy-mm-dd'});
+            $('#id_photo').bind('change', function(){ $('#id_photo_view').hide() });
+            $('#ajax_loader').hide();
 
-            $('#id_photo').bind('change', function(){ $('#id_photo_view').hide() })
-        });
+            var options = {
+                beforeSubmit: cbRequest,
+                success: cbResponse,
+                error: cbError,
+            };
+
+            $('#id_profile_edit').submit(function() {
+                $(this).ajaxSubmit(options);
+                return false
+            });
+
+            function lockForm(disable) {
+                $("#id_profile_edit :input").attr("disabled", disable);
+            };
+
+            // pre-submit callback
+            function cbRequest(formData, jqForm, options) {
+                $('#ajax_loader').show();
+                $('#ajax_target').html('');
+                lockForm(true);
+            };
+
+            // post-submit callback
+            function cbResponse(responseText, statusText, xhr, $form)  {
+                $('ul[id$=_errors]').html('');
+                var message = '';
+                var obj = responseText;
+                if (!jQuery.isEmptyObject(obj)) {
+                    for (var id in obj) {
+                        var text = jQuery.map(obj[id], function(item, j){
+                            return sprintf('<li>%s</li>', item) }
+                        ).join();
+                        var $html = sprintf(
+                            "<ul class=\"errorlist\">%(text)s</ul>",
+                            {id: id, text: text}
+                        );
+                        $(sprintf('ul[id=%(id)s_errors]', {id: id})).html($html)
+                    }
+                } else {
+                    message = 'Changes have been saved'
+                }
+                $('#ajax_loader').hide();
+                $('#ajax_target').html(message);
+                lockForm(false);
+            };
+
+            function cbError(xhr, ajaxOptions, thrownError) {
+                $('#ajax_loader').hide();
+                $('#ajax_target').html(sprintf('%d - %s', xhr.status, thrownError));
+                lockForm(false);
+            }
+        })
     </script>
 {% endblock script %}
