@@ -118,7 +118,8 @@
             // pre-submit callback
             function cbRequest(formData, jqForm, options) {
                 $('#ajax_loader').show();
-                $('#ajax_target').html('')
+                $('#ajax_target').html('');
+                $("#id_profile_edit :input").attr("disabled", true);
             };
 
             // post-submit callback
@@ -141,7 +142,8 @@
                     message = 'Changes have been saved'
                 }
                 $('#ajax_loader').hide();
-                $('#ajax_target').html(message)
+                $('#ajax_target').html(message);
+                $("#id_profile_edit :input").attr("disabled", false);
             }
         })
     </script>

@@ -38,11 +38,9 @@ class ProfileEditView(UpdateView):
         self.object = self.get_object()
         form = self.get_form(self.get_form_class())
         if form.is_valid():
-            #return self.form_valid(form)
             return HttpResponse()
         else:
             return HttpResponse(json.dumps(form.errors))
-            #return self.form_invalid(form)
 
     def get_queryset(self):
         return super(ProfileEditView, self).get_queryset().select_related('user')
