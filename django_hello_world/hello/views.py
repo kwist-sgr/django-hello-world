@@ -1,10 +1,8 @@
-import json
 from django.views.generic.edit import UpdateView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
 from annoying.decorators import render_to, ajax_request
-from django.http import HttpResponse
 
 from django_hello_world.hello.models import Profile, StoredHttpRequest
 from django_hello_world.hello.forms import ProfileEditForm
@@ -12,7 +10,7 @@ from django_hello_world.hello.forms import ProfileEditForm
 
 @render_to('hello/home.html')
 def home(request):
-    return {'profile': Profile.objects.get(user__id=1)}
+    return {'profile': Profile.objects.select_related('user').get(user__id=1)}
 
 
 @render_to('hello/requests.html')

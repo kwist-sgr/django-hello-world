@@ -7,9 +7,11 @@ Replace this with more appropriate tests for your application.
 from django.contrib.auth.models import User
 from django.conf import settings as conf
 
+from django.template import Template, Context
+
 from django.core.urlresolvers import reverse
 from django.test import TestCase
-from django.test.client import Client
+from django.test.client import Client, RequestFactory
 
 from django_hello_world.hello.models import Profile, StoredHttpRequest
 from django_hello_world.hello.forms import ProfileEditForm
@@ -136,6 +138,7 @@ class ProfileEditTest(TestCase):
         self.assertContains(response, 'Login')
         self.assertNotContains(response, 'Edit')
         self.assertNotContains(response, 'Logout')
+        self.assertNotContains(response, '(Admin)')
 
     def test_authenticated(self):
         user = User.objects.get(id=1)
@@ -145,6 +148,9 @@ class ProfileEditTest(TestCase):
         self.assertNotContains(response, 'Login')
         self.assertContains(response, 'Edit')
         self.assertContains(response, 'Logout')
+        self.assertContains(response, '(%s)' % user.username)
+        url = reverse('admin:%s_%s_change' % (user._meta.app_label, user._meta.module_name), args=[user.id])
+        self.assertContains(response, url)
 
     def test_auth_edit(self):
         id = 1
@@ -246,3 +252,23 @@ class ProfileEditTest(TestCase):
         data['birthday'] = 'dfhgh'
         r = self.client.post(url, data=data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
         self.assertContains(r, 'birthday')
+
+
+class EditLinkTest(TestCase):
+
+    def test_tag(self):
+        html = '''
+            {% load edit_link %}
+            {% autoescape on %}
+                {% edit_link request.user %}
+            {% endautoescape %}
+        '''
+        template = Template(html)
+
+        user = User.objects.get(id=1)
+        request = RequestFactory().get('/')
+        request.user = user
+        context = Context({'request': request})
+
+        url = reverse('admin:%s_%s_change' % (user._meta.app_label, user._meta.module_name), args=[user.id])
+        self.assertTrue(url in template._render(context))
