@@ -136,6 +136,7 @@ class ProfileEditTest(TestCase):
         self.assertContains(response, 'Login')
         self.assertNotContains(response, 'Edit')
         self.assertNotContains(response, 'Logout')
+        self.assertNotContains(response, '(Admin)')
 
     def test_authenticated(self):
         user = User.objects.get(id=1)
@@ -145,6 +146,9 @@ class ProfileEditTest(TestCase):
         self.assertNotContains(response, 'Login')
         self.assertContains(response, 'Edit')
         self.assertContains(response, 'Logout')
+        self.assertContains(response, '(%s)' % user.username)
+        url = reverse('admin:%s_%s_change' % (user._meta.app_label, user._meta.module_name), args=[user.id])
+        self.assertContains(response, url)
 
     def test_auth_edit(self):
         id = 1

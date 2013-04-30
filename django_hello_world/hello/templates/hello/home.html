@@ -1,8 +1,11 @@
 {% extends "base.html" %}
 
+{% load renderers %}
+
 {% block title %}Django Hello World{% endblock %}
 
 {% block content %}
+
     <h3>Hello! This is a Django Hello World Project.</h3>
 
     <table width="80%" cellpadding="0" cellspacing="10" border="0">
@@ -11,7 +14,10 @@
             <td>
                 {% if user.is_authenticated %}
                     <div>
-                        <a href="{% url "django.contrib.auth.views.logout" %}?next={{ request.path|default:'/' }}">Logout</a>
+                        <a href="{% url "django.contrib.auth.views.logout" %}?next={{ request.path|default:'/' }}">Logout</a>&nbsp;
+                        {% autoescape on %}
+                            {% edit_link request.user %}
+                        {% endautoescape %}
                     </div>
                     <div>
                         <a href="/profile/{{ user.id }}/edit/">Edit</a>
