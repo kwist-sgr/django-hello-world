@@ -4,10 +4,16 @@ when you run "manage.py test".
 
 Replace this with more appropriate tests for your application.
 """
+import os
+import subprocess
+
+from datetime import date
+
 from django.contrib.auth.models import User
 from django.conf import settings as conf
 
 from django.template import Template, Context
+from django.core.management import call_command
 
 from django.core.urlresolvers import reverse
 from django.test import TestCase
@@ -16,6 +22,8 @@ from django.test.client import Client, RequestFactory
 from django_hello_world.hello.models import Profile, StoredHttpRequest
 from django_hello_world.hello.forms import ProfileEditForm
 from django_hello_world.hello.views import ProfileEditView
+
+from StringIO import StringIO
 
 
 class HttpTest(TestCase):
@@ -272,3 +280,27 @@ class EditLinkTest(TestCase):
 
         url = reverse('admin:%s_%s_change' % (user._meta.app_label, user._meta.module_name), args=[user.id])
         self.assertTrue(url in template._render(context))
+
+
+class PrintAllModelsTest(TestCase):
+
+    def test_command(self):
+        std_out = StringIO()
+        std_err = StringIO()
+        call_command('print_all_models', stderr=std_err, stdout=std_out)
+        for str_out, str_err in zip(std_out.readlines(), std_err.readlines()):
+            self.assertEquals(str_err, 'error: %s' % str_out)
+
+    def test_bash(self):
+        popen = subprocess.Popen(
+            ['bash', 'print_all_models.sh'],
+            stdout=subprocess.PIPE
+        )
+        std_out, std_err = popen.communicate()
+        file_path = '%s.dat' % date.today().strftime('%Y-%m-%d')
+        self.assertTrue(os.path.exists(file_path))
+        handle = open(file_path, 'r')
+        for str_out, str_err in zip(std_out.split('\n'), handle.readlines()):
+            self.assertEquals(str_err.rstrip('\n'), 'error: %s' % str_out)
+        handle.close()
+        os.unlink(file_path)
