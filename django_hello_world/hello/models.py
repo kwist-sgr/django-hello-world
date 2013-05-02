@@ -4,6 +4,9 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils import timezone
 from django.db import models
 
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
+
 
 class Profile(models.Model):
 
@@ -32,3 +35,20 @@ class StoredHttpRequest(models.Model):
     user_agent = models.TextField(max_length=300, blank=False, null=True)
     referer = models.TextField(max_length=300, blank=False, null=True)
     remote_addr = models.GenericIPAddressField()
+
+
+class ModelAction(models.Model):
+    ACTION_CREATE = 'create'
+    ACTION_MODIFY = 'modify'
+    ACTION_DELETE = 'delete'
+
+    pk = models.IntegerField()
+    app_label = models.CharField(max_length=100, blank=False, null=False)
+    model = models.CharField(max_length=100, blank=False, null=False)
+    action = models.CharField(max_length=10, blank=False, null=False)
+    datetime = models.DateTimeField(default=timezone.now)
+
+
+@receiver([post_save, post_delete], dispatch_uid='cbAction')
+def action_callback(sender, instance, **kwargs):
+    pass

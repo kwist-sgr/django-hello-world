@@ -12,7 +12,7 @@ class Command(BaseCommand):
                 return '[%(module)s] %(app_label)s, %(model)s, %(count)d' % {
                     'module': obj.__module__,
                     'app_label': j.name,
-                    'model': j.model,
+                    'model': obj.__name__,
                     'count': obj.objects.count()
                 }
 
