@@ -7,11 +7,8 @@ def error_trapping(result=None, on_exception=None):
             try:
                 return func(*args, **kwargs)
             except Exception, e:
-                try:
-                    if callable(on_exception):
-                        on_exception(e)
-                except:
-                    pass
+                if callable(on_exception):
+                    on_exception(e)
                 return result
         return wrapper
     # Allow decorator without arguments to be called without brackets

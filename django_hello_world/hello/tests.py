@@ -311,14 +311,6 @@ class PrintAllModelsTest(TestCase):
 
 class SignalTest(TestCase):
 
-    def test_ignore_model_action(self):
-        for _ in xrange(randint(2, 10)):
-            ModelActionFactory()
-
-        self.assertFalse(
-            ModelAction.objects.filter(model='ModelAction').count()
-        )
-
     def test_action(self):
         types = {
             'user': lambda: UserFactory(),
@@ -378,3 +370,11 @@ class SignalTest(TestCase):
                 ).count(),
                 count
             )
+            
+        for _ in xrange(randint(2, 10)):
+            ModelActionFactory()
+
+        self.assertFalse(
+            ModelAction.objects.filter(model='ModelAction').count()
+        )
+
