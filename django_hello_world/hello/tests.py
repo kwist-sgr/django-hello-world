@@ -331,6 +331,7 @@ class SignalTest(TestCase):
             for _ in xrange(randint(2, 10)):
                 proc()
 
+        # Create
         for model in (User, Profile, StoredHttpRequest):
             self.assertEqual(
                 ModelAction.objects.filter(
