@@ -8,11 +8,11 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         try:
             def get_model_info(cls):
-                obj = j.model_class()
+                obj = cls.model_class()
                 return '[%(module)s] %(app_label)s, %(model)s, %(count)d' % {
                     'module': obj.__module__,
-                    'app_label': j.name,
-                    'model': j.model,
+                    'app_label': cls.name,
+                    'model': obj.__name__,
                     'count': obj.objects.count()
                 }
 
