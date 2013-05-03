@@ -7,7 +7,9 @@ Replace this with more appropriate tests for your application.
 import os
 import subprocess
 
+from random import randint, choice
 from datetime import date
+from StringIO import StringIO
 
 from django.contrib.auth.models import User
 from django.conf import settings as conf
@@ -19,11 +21,12 @@ from django.core.urlresolvers import reverse
 from django.test import TestCase
 from django.test.client import Client, RequestFactory
 
-from django_hello_world.hello.models import Profile, StoredHttpRequest
+from django_hello_world.hello.models import Profile, StoredHttpRequest, \
+    ModelAction
 from django_hello_world.hello.forms import ProfileEditForm
 from django_hello_world.hello.views import ProfileEditView
-
-from StringIO import StringIO
+from django_hello_world.hello.testing import UserFactory, ProfileFactory, \
+    StoredHttpRequestFactory, ModelActionFactory
 
 
 class HttpTest(TestCase):
@@ -296,7 +299,7 @@ class PrintAllModelsTest(TestCase):
             ['bash', 'print_all_models.sh'],
             stdout=subprocess.PIPE
         )
-        std_out, std_err = popen.communicate()
+        std_out, _ = popen.communicate()
         file_path = '%s.dat' % date.today().strftime('%Y-%m-%d')
         self.assertTrue(os.path.exists(file_path))
         handle = open(file_path, 'r')
@@ -304,3 +307,74 @@ class PrintAllModelsTest(TestCase):
             self.assertEquals(str_err.rstrip('\n'), 'error: %s' % str_out)
         handle.close()
         os.unlink(file_path)
+
+
+class SignalTest(TestCase):
+
+    def test_action(self):
+        types = {
+            'user': lambda: UserFactory(),
+            'profile': lambda: ProfileFactory(),
+            'http': lambda: StoredHttpRequestFactory(user=None),
+            'http_auth': lambda: StoredHttpRequestFactory()
+        }
+
+        for id, proc in types.iteritems():
+            for _ in xrange(randint(2, 10)):
+                proc()
+
+        # Create
+        for model in (User, Profile, StoredHttpRequest):
+            self.assertEqual(
+                ModelAction.objects.filter(
+                    model=model.__name__,
+                    action=ModelAction.ACTION_CREATE
+                ).count(),
+                model.objects.count()
+            )
+
+        # Modify
+        modify = dict(
+            (m, randint(2, m.objects.count()))
+            for m in (User, Profile, StoredHttpRequest)
+        )
+
+        for model, count in modify.iteritems():
+            all = list(model.objects.all())
+            for obj in all[:count]:
+                obj.save()
+
+            self.assertEqual(
+                ModelAction.objects.filter(
+                    model=model.__name__,
+                    action=ModelAction.ACTION_MODIFY
+                ).count(),
+                count
+            )
+
+        # Delete
+        delete = dict(
+            (m, randint(2, m.objects.count()))
+            for m in (Profile, StoredHttpRequest)
+        )
+
+        for model, count in delete.iteritems():
+            all = list(model.objects.all())
+            for obj in all[:count]:
+                obj.delete()
+
+            self.assertEqual(
+                ModelAction.objects.filter(
+                    model=model.__name__,
+                    action=ModelAction.ACTION_DELETE
+                ).count(),
+                count
+            )
+            
+        for _ in xrange(randint(2, 10)):
+            ModelActionFactory()
+
+        self.assertFalse(
+            ModelAction.objects.filter(model='ModelAction').count()
+        )
+

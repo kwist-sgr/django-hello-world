@@ -16,7 +16,7 @@ migrate:
 	PYTHONPATH=`pwd` DJANGO_SETTINGS_MODULE=django_hello_world.settings $(MANAGE) migrate 
 
 pep8:
-	pep8 --ignore=E501 --filename=*.py django_hello_world
+	pep8 --ignore=E501 --repeat --filename=*.py django_hello_world
 
 pip:
 	pip install -r requirements.txt
