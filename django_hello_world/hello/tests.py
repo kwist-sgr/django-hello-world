@@ -303,4 +303,4 @@ class PrintAllModelsTest(TestCase):
         for str_out, str_err in zip(std_out.split('\n'), handle.readlines()):
             self.assertEquals(str_err.rstrip('\n'), 'error: %s' % str_out)
         handle.close()
-        #os.unlink(file_path)
+        os.unlink(file_path)
