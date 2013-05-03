@@ -7,11 +7,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         try:
-            def get_model_info(cls):
-                obj = cls.model_class()
+            def get_model_info(ct):
+                obj = ct.model_class()
                 return '[%(module)s] %(app_label)s, %(model)s, %(count)d' % {
                     'module': obj.__module__,
-                    'app_label': cls.name,
+                    'app_label': ct.name,
                     'model': obj.__name__,
                     'count': obj.objects.count()
                 }
