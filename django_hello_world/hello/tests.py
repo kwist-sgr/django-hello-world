@@ -296,11 +296,11 @@ class PrintAllModelsTest(TestCase):
             ['bash', 'print_all_models.sh'],
             stdout=subprocess.PIPE
         )
-        std_out, std_err = popen.communicate()
+        std_out, _ = popen.communicate()
         file_path = '%s.dat' % date.today().strftime('%Y-%m-%d')
         self.assertTrue(os.path.exists(file_path))
         handle = open(file_path, 'r')
         for str_out, str_err in zip(std_out.split('\n'), handle.readlines()):
             self.assertEquals(str_err.rstrip('\n'), 'error: %s' % str_out)
         handle.close()
-        os.unlink(file_path)
+        #os.unlink(file_path)

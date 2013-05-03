@@ -32,3 +32,10 @@ class StoredHttpRequest(models.Model):
     user_agent = models.TextField(max_length=300, blank=False, null=True)
     referer = models.TextField(max_length=300, blank=False, null=True)
     remote_addr = models.GenericIPAddressField()
+    priority = models.IntegerField(db_index=True, default=0)
+
+    def __unicode__(self):
+        return '%s %s' % (self.method, self.full_path)
+
+    class Meta:
+        ordering = ['-priority', 'id']
