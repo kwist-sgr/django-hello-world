@@ -41,8 +41,9 @@ class StoredHttpRequest(models.Model):
     def __unicode__(self):
         return '%s %s' % (self.method, self.full_path)
 
-	class Meta:
-		    ordering = ['-priority', 'id']
+    class Meta:
+        ordering = ['-priority', 'id']
+
 
 class ModelAction(models.Model):
     ACTION_CREATE = 'create'
