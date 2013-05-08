@@ -300,6 +300,9 @@ class PrintAllModelsTest(TestCase):
             stdout=subprocess.PIPE
         )
         std_out, _ = popen.communicate()
+        if not std_out:
+            self.skipTest('Command error')
+
         file_path = '%s.dat' % date.today().strftime('%Y-%m-%d')
         self.assertTrue(os.path.exists(file_path))
         handle = open(file_path, 'r')
@@ -370,11 +373,10 @@ class SignalTest(TestCase):
                 ).count(),
                 count
             )
-            
+
         for _ in xrange(randint(2, 10)):
             ModelActionFactory()
 
         self.assertFalse(
             ModelAction.objects.filter(model='ModelAction').count()
         )
-
